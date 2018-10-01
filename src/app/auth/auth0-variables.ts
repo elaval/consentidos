@@ -4,8 +4,12 @@ interface AuthConfig {
   callbackURL: string;
 }
 
+const BASEHREF = (document.getElementsByTagName('base')[0] || {})['href'];
+
+
 export const AUTH_CONFIG: AuthConfig = {
   clientID: 'd364BOJ6EpUlT2YoZkuD2vZxF2VcSfj4',
   domain: 'meaningfuldata.auth0.com',
-  callbackURL: 'http://localhost:4300/callback'
+  callbackURL: `${BASEHREF}callback`
+  //callbackURL: 'http://localhost:4300/callback'
 };
