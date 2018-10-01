@@ -72,7 +72,7 @@ export class DataService {
   }
 
   loadMatricula() {
-    this.http.get("./src/assets/data/ingreso2017_06.txt", {responseType: 'text'})
+    this.http.get("./assets/data/ingreso2017_06.txt", {responseType: 'text'})
     .subscribe((data:any) => {
       this.data_matricula = d3.tsvParse(data);
       this.setupCrossfilterMatricula(this.data_matricula);
