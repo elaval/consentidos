@@ -35,6 +35,11 @@ export class MainSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.scopeService.scope.subscribe(scope => {
+      this.selectedTipoInstitucion= scope && scope['tipo_inst_1'] || "*";
+      this.selectedInstitucion= scope && scope['nomb_inst'] || "*";
+      this.selectedCarrera= scope && scope['nomb_carrera'] || "*";
+    })
   }
 
   selectTipoInstitucion(item) {

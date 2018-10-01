@@ -28,7 +28,7 @@ export class SchoolsInstitutionsComponent implements OnInit {
   chartWidth: number;
   chartHeight: number;
   linksContainer: d3.Selection<d3.BaseType, {}, null, undefined>;
-  container: d3.Selection<d3.BaseType, {}, null, undefined>;
+  container;
 
   constructor(
     private element: ElementRef,
