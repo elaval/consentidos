@@ -28,7 +28,7 @@ export class TipoInstitucionPanelComponent implements OnInit {
   }
   
   constructor(
-    private scopeService: ScopeService;
+    private scopeService: ScopeService
   ) { }
 
   ngOnInit() {
