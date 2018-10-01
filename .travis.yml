@@ -21,7 +21,7 @@ deploy:
   bucket: visualiza.tideapps.com
   skip_cleanup: true
   upload-dir: consentidos
-  local_dir: dist
+  local_dir: dist/consentidos
 
 notifications:
   email:
