@@ -14,7 +14,7 @@ export class SchoolsInstitutionsComponent implements OnInit {
   @Input()
   unit;
 
-  svg: import("/Users/ernestolaval/node_modules/@types/d3-selection/index").Selection<import("/Users/ernestolaval/node_modules/@types/d3-selection/index").BaseType, {}, null, undefined>;
+  svg: any;
   el: any;
   selectedSchool: any;
   selectedInstitution: any;
