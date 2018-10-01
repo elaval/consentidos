@@ -1,0 +1,60 @@
+<div id="wrapper" [class.toggled]="toggled">
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+              <a href="#">
+                  Start Bootstrap
+              </a>
+          </li>
+          <li>
+              <a href="#">Dashboard</a>
+          </li>
+          <li>
+              <a href="#">Shortcuts</a>
+          </li>
+          <li>
+              <a href="#">Overview</a>
+          </li>
+          <li>
+              <a href="#">Events</a>
+          </li>
+          <li>
+              <a href="#">About</a>
+          </li>
+          <li>
+              <a href="#">Services</a>
+          </li>
+          <li>
+              <a href="#">Contact</a>
+          </li>
+      </ul>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+      <div class="container-fluid">
+
+        <div *ngIf="!dataReady">
+                    Loading data ...
+        </div>
+        <div *ngIf="dataReady">
+
+            <app-main-selector></app-main-selector>
+            <app-global-panel *ngIf="scopeService.scopeType()=='global'" [unit]="unit"></app-global-panel>
+            <app-tipo-institucion-panel *ngIf="scopeService.scopeType()=='tipoInstitucion'" [unit]="unit"></app-tipo-institucion-panel>
+            <app-institucion-panel *ngIf="scopeService.scopeType()=='institucion'" [unit]="unit"></app-institucion-panel>
+            <app-carrera-panel *ngIf="scopeService.scopeType()=='carrera'" [unit]="unit"></app-carrera-panel>
+        </div>
+
+      </div>
+
+  </div>
+  <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+

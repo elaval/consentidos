@@ -1,0 +1,34 @@
+<h2>{{unit.getInstitucion()}} | {{unit.getCarrera()}}</h2>
+
+<h3>Perfil de estudiantes matriculados en 2017</h3>
+
+
+
+<span class="metric text-primary">{{unit.getMatricula() | async}}</span> estudiantes matriculados en 2017
+
+<div class="text-muted small"><i>(Se consideran estudiantes egresados de Enseñanza Media a partir de 2013)</i></div>
+<p>
+Índice de desempeño escolar: {{formatterPercent(this.top50Index)}} <span class="text-muted">(estudiantes provenientes del 50% superior de su establecimiento de origen / ranking EM)</span><br>
+Índice origen escolar publico: {{formatterPercent(1-this.ppIndex)}} <span class="text-muted">(estudiantes provenientes de establecimientos que NO son particulares pagados</span><br>
+<p></p>
+
+<app-miniquad [unit]="unit"></app-miniquad>
+
+<app-schools-institutions [unit]="unit"></app-schools-institutions>
+<app-competitor  [institucion]="selectedInstitucion" [carrera]="selectedCarrera"></app-competitor>
+<p></p>
+
+
+  <table class="table">
+      <tr *ngFor="let item of byPercentil">
+        <td>{{item.percentil}}</td>
+        <td>{{item.matricula}}</td>
+      </tr>
+  </table>
+
+  <table class="table">
+      <tr *ngFor="let item of byDependencia">
+        <td>{{item.dependencia}}</td>
+        <td>{{item.matricula}}</td>
+      </tr>
+  </table>

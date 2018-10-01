@@ -1,0 +1,16 @@
+.card {
+  background-color: darkred;
+  border-radius: 3px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.card .size{
+  font-size: 24px;
+  color: orange
+}
+
+.card .name{
+  font-size: 12px;
+  color:white
+}

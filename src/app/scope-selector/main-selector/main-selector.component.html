@@ -1,0 +1,29 @@
+<form>
+    <div class="form-row align-items-center">
+      <div class="col-auto my-1">
+        <label class="mr-sm-2" for="tipoInstitucion">Tipo de Institución</label>
+        <select [(ngModel)]="selectedTipoInstitucion" (ngModelChange)="selectTipoInstitucion($event)" name="tipoInstitucion" class="custom-select mr-sm-2" id="tipoInstitucion">
+          <option selected [attr.value]="'*'">Tipo de Institución...</option>
+          <option *ngFor="let item of tipoInstituciones" [attr.value]="item">{{item}}</option>
+        </select>
+      </div>  
+  
+      <div class="col-auto my-1">
+        <label class="mr-sm-2" for="inlineFormCustomSelect">Institución</label>
+        <select [(ngModel)]="selectedInstitucion" (ngModelChange)="selectInstitucion($event)" name="institucion" class="custom-select mr-sm-2" id="institucion">
+          <option selected [attr.value]="'*'">Institución...</option>
+          <option *ngFor="let item of instituciones" [attr.value]="item">{{item}}</option>
+        </select>
+      </div>
+    
+      <div class="col-auto my-1">
+        <label class="mr-sm-2" for="carrera">Carrera</label>
+        <select [(ngModel)]="selectedCarrera" (ngModelChange)="selectCarrera($event)" name="carrera" class="custom-select mr-sm-2" id="carrera">
+          <option selected [attr.value]="'*'">Carrera...</option>
+          <option *ngFor="let item of carreras" [attr.value]="item">{{item}}</option>
+        </select>
+      </div>
+  
+  
+    </div>
+  </form>
