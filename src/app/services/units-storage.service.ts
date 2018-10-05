@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UnitOfAnalysis } from '../models/unit-of-analysis';
 import * as _ from "lodash";
-import { root } from 'node_modules_old/rxjs/src/internal/util/root';
 
 @Injectable({
   providedIn: 'root'
