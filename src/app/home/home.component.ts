@@ -4,6 +4,7 @@ import { DataService } from '../services/data.service';
 import { UnitOfAnalysis } from '../models/unit-of-analysis';
 import * as d3 from "d3";
 import { ScopeService } from '../services/scope.service';
+import { UnitsStorageService } from '../services/units-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,8 @@ export class HomeComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private dataService: DataService,
-    private scopeService: ScopeService
+    private scopeService: ScopeService,
+    private unitsStorageService: UnitsStorageService
     ) { 
       dataService.instituciones.subscribe(data => {
         this.instituciones  = data;
@@ -52,16 +54,25 @@ export class HomeComponent implements OnInit {
     this.dataService.dataReady.subscribe(ready => this.dataReady = ready);
   }
 
+  selectUnit(unit:UnitOfAnalysis) {
+    this.unit = unit;
+    this.scopeService.setScope(unit.scope);
+    this.dataService.selectUnit(unit);
+  }
 
   updateUnitOfAnalysis(scope) {
 
-    this.unit = new UnitOfAnalysis({
-      "scope": scope,
-      "dataService": this.dataService
-    });
+    if (this.unitsStorageService.getUnit(scope)) {
+      this.unit = this.unitsStorageService.getUnit(scope);
+    } else {
+      this.unit = new UnitOfAnalysis({
+        "scope": scope,
+        "dataService": this.dataService,
+        "unitsStorageService": this.unitsStorageService
+      });
+      this.unitsStorageService.setUnit(this.unit);
+    }
 
-
-    
   }
 
 

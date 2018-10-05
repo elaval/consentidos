@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-institution-profile',
@@ -6,10 +7,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./institution-profile.component.css']
 })
 export class InstitutionProfileComponent implements OnInit {
-
-  constructor() { }
+  @Input()
+  unit;
+  indexGratuito: number;
+  indexRendimiento: any;
+  matricula: any;
+  
+  constructor(
+    private utilService: UtilService
+  ) { }
 
   ngOnInit() {
+    this.unit.getHigherPercentileIndex()
+    .subscribe(data => 
+      this.indexRendimiento = +data
+    )
+
+    this.unit.getPrivateIndex()
+    .subscribe(data => 
+      this.indexGratuito = 1 - (+data || 0)
+    )
+
+    this.unit.getMatricula()
+    .subscribe(data => 
+      this.matricula = data
+    )
+
+
   }
 
 }

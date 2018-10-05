@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, zip } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as d3 from "d3";
 import * as _ from "lodash";
 import * as crossfilter from "crossfilter";
+import { UnitOfAnalysis } from '../models/unit-of-analysis';
+import { DIMENSION_ATTRIBUTES } from '../config';
 
-const logosURL = "https://raw.githubusercontent.com/elaval/datasets/master/logos.txt?v=3"
+const logosURL = "https://raw.githubusercontent.com/elaval/datasets/master/logos.txt?v=6"
 @Injectable({
   providedIn: 'root'
 })
@@ -143,6 +145,16 @@ export class DataService {
     this.carrerasSubject.next(this.cfCarrerasGroups['nomb_carrera'].all().map(d => d.key));
   }
 
+  selectUnit(unit:UnitOfAnalysis) {
+    if (unit.scope[DIMENSION_ATTRIBUTES['carrera']]) {
+      this.selectCarrera(unit.scope[DIMENSION_ATTRIBUTES['carrera']])
+    } else if (unit.scope[DIMENSION_ATTRIBUTES['institucion']]) {
+      this.selectInstitucion(unit.scope[DIMENSION_ATTRIBUTES['institucion']])
+    } else if (unit.scope[DIMENSION_ATTRIBUTES['tipoInstitucion']]) {
+      this.selectTipoInstitucion(unit.scope[DIMENSION_ATTRIBUTES['tipoInstitucion']])
+    } 
+  }
+
   selectTipoInstitucion(item) {
     this.cfCarrerasDimensions['tipo_inst_1'].filterExact(item);
     this.cfCarrerasDimensions['nomb_inst'].filterAll();
@@ -268,4 +280,66 @@ export class DataService {
   formatterPercent = d3.format(".1%");
   formatterNumber = d3.format(",");
   
+  /**
+   * Takes an array of UnitsOfAnalysis and groups them by their size (matricula).
+   * We create 2 groups by type:
+   * 1: units higher than 1 stdev above size mean
+   * 0: units within 1 stdev from size mean
+   * -1: units lower than 1 stdev from size mean
+   * 
+   * 
+   *
+   * @param {*} units
+   * @memberof DataService
+   */
+  groupUnitsBySize(units: UnitOfAnalysis[]) {
+    const subject = new Subject();
+    // We use zip to get call getMatricula() observables in parallel
+    let sizeObservables = units.map(d => d.getMatricula());
+    
+    // zip().subscribe was been executed before the return statement
+    // we use setTimeout as a hack to prevent syn issues
+    setTimeout(() => {
+      zip(...(sizeObservables))
+      .subscribe(sizeSet => {
+        let items = sizeSet.map((size, i) => ({
+          size: size,
+          unit: units[i]
+        }));
+  
+        let groups = this.getGroupsBySize(items);
+  
+        subject.next(groups);
+      });
+    },0)
+
+
+    return subject.asObservable();
+
+  }
+  
+
+  getGroupsBySize(items) {
+    items = _.orderBy(items, d => -d.size);
+    const mean = d3.mean(items, (d:any) => d.size);
+    const stdev = d3.deviation(items, (d:any) => d.size);
+
+    const inputGroups = _.groupBy(items, (d:any) => {
+      let type = "0";
+      if (d.size > mean + stdev) { type= "1"}
+      else if (d.size < mean - stdev) { type= "-1"}
+
+      return type;
+    })
+
+    let groups = _.orderBy(_.map(inputGroups, (items, key) => {
+      return {
+        type: key,
+        instituciones: items.map(d => d.unit)
+      }
+    }), d => -(+d.type))
+
+    return groups;
+  }
+
 }

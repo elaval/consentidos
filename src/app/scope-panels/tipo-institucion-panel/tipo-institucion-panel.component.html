@@ -1,26 +1,22 @@
-<h2>{{unit.getTipoInstitucion()}}</h2>
+<h2>{{unit.getTipoInstitucion()}} <i class="fa fa-window-close-o" (click)="unselectDimension('tipoInstitucion')"></i></h2>
 
 <h3>Perfil de estudiantes matriculados en 2017</h3>
-
-
-
-<span class="metric text-primary">{{formatterNumber(matricula)}}</span> estudiantes matriculados en 2017
-
-<div class="text-muted small"><i>(Se consideran estudiantes egresados de Enseñanza Media a partir de 2013)</i></div>
-<p>
-<app-miniquad [unit]="unit"></app-miniquad>
+<app-institution-profile [unit]="unit"></app-institution-profile>
+<hr>
 
 
 <div *ngFor="let group of groupBySize" >
   <h2>{{groupLabel[group.type]}}</h2>
   <div class="row" >
-    <div *ngFor="let item of group.instituciones" (click)="selectInstitucion(item.name)" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 card">     
-      <div class="row">
-          <div class="col-12 name">{{item.name}}</div>
-      </div>
-      <div class="row">
-        <div class="col-6 size">{{item.matricula}}</div>
-      </div>
-    </div>
+      <app-entity-card 
+      [unit]="unit" 
+      *ngFor="let unit of group.instituciones" 
+      (click)="selectItem(unit)" 
+      class="col-xs-2 col-sm-2 col-md-2 col-lg-2"
+      [ngClass]="unit.getType()"
+      >     
+    </app-entity-card>
   </div>
 </div>
+
+

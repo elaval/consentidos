@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { UnitOfAnalysis } from '../../models/unit-of-analysis';
 import { ScopeService } from '../../services/scope.service';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-global-panel',
@@ -12,6 +13,11 @@ import { ScopeService } from '../../services/scope.service';
 export class GlobalPanelComponent implements OnInit {
   @Input()
   unit: UnitOfAnalysis;
+
+  @Output()
+  selectUnit = new EventEmitter();
+
+
   matricula: any;
   records: any;
   ppIndex: any;
@@ -20,7 +26,8 @@ export class GlobalPanelComponent implements OnInit {
   tipoInstituciones: any[];
   
   constructor(
-    private scopeService: ScopeService
+    private scopeService: ScopeService,
+    private utilService: UtilService
   ) { }
 
   ngOnInit() {
@@ -42,13 +49,6 @@ export class GlobalPanelComponent implements OnInit {
       this.ppIndex = data
     )
 
-    this.unit.getRecords()
-    .subscribe(data => {
-      this.records = data;
-
-      }
-    )
-
     this.unit.getMatricula()
     .subscribe(data => 
       this.matricula = data
@@ -62,28 +62,6 @@ export class GlobalPanelComponent implements OnInit {
         item: d,
         size: d.getMatricula()
       }))
-
-
-/*
-
-// Now transform and subscribe to the observable.
-thingsObs
-
-  // Unwrap `thing.name` for each object and store it under `thing.unwrappedName`.
-  .mergeMap(thing =>
-    thing.name.map(unwrappedName => Object.assign(thing, {unwrappedName: unwrappedName}))
-  )
-
-  // Gather all things in a SINGLE array to sort them.
-  .toArray()
-
-  // Sort the array of things by `unwrappedName`.
-  .map(things => things.sort(compareFn))
-
-  .subscribe();
-  */
-
-
     })
   }
 
@@ -91,6 +69,12 @@ thingsObs
     const newScope = this.unit.scope && _.clone(this.unit.scope) || {};
     newScope['tipo_inst_1']= name;
     this.scopeService.setScope(newScope);
+  }
+
+  selectItem(unit) {
+    const newScope = unit.scope && _.clone(unit.scope) || {};
+    this.scopeService.setScope(newScope);
+    this.selectUnit.emit(unit);
   }
 
 

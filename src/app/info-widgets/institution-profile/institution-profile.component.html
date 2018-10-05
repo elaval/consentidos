@@ -1,3 +1,18 @@
+<span class="metric text-primary matricula">{{utilService.formatterNumber(matricula)}}</span> estudiantes matriculados en 2017
+
+<div class="text-muted small"><i>(Se consideran estudiantes egresados de Enseñanza Media a partir de 2013)</i></div>
 <p>
-  institution-profile works!
-</p>
+Perfil de ingreso<p></p>
+<p></p>
+
+<hr>
+
+<div class="row">
+  <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-center">
+    <app-miniquad [unit]="unit"></app-miniquad>
+  </div>  
+  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+    <strong>{{utilService.getDescRendimiento(this.indexRendimiento)}}</strong> es el perfil de rendimiento escolar <br> <span class="text-muted">{{utilService.formatterPercent(this.indexRendimiento)}} de estudiantes provenientes del los mejores egresados de su generación (mejores 3 deciles en ranking de egreso)</span><br>
+    <strong>{{utilService.getDescDependencia(this.indexGratuito)}}</strong> es el carácter de los establecimientos de origen de la mayoría de los estudiantes <br>   <span class="text-muted">{{utilService.formatterPercent(indexGratuito)}} de estudiantes provenientes de establecimientos gratuitos (liceos municipales o subvencionados)</span><br>  
+  </div>
+</div>

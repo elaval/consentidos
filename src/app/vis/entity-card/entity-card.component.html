@@ -1,0 +1,17 @@
+<div 
+  [ngClass]="unit.getType()"
+>     
+  <div class="row">
+      <div class="col-12 name">{{unit.getName()}}</div>
+  </div>
+  <div class="row">
+    <div class="col-4 size">{{unit.getMatricula() | async}}</div>
+    <div class="col-2 size text-center">
+        <app-miniquad [unit]="unit" [size]="20" [hideLabels]="true"></app-miniquad>
+      </div>    
+      <div class="col-6 labels">
+          {{publicLabel}}<br>
+          {{rendimientoLabel}}
+        </div>
+  </div>
+</div>

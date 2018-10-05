@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as d3 from "d3";
+import * as _ from "lodash";
+import { ScopeService } from '../../services/scope.service';
  
 @Component({
   selector: 'app-carrera-panel',
@@ -9,6 +11,10 @@ import * as d3 from "d3";
 export class CarreraPanelComponent implements OnInit {
   @Input()
   unit;
+
+  @Output()
+  selectUnit = new EventEmitter();
+  
   byPercentil: any;
   top50Index: any;
   byDependencia: any;
@@ -17,7 +23,9 @@ export class CarreraPanelComponent implements OnInit {
   competitionGraphData: any;
   matricula: any;
   
-  constructor() { }
+  constructor(
+    private scopeService: ScopeService
+  ) { }
 
   ngOnInit() {
   }
@@ -62,6 +70,17 @@ export class CarreraPanelComponent implements OnInit {
   }
 
   formatterPercent = d3.format(".1%");
+
+
+  selectItem(unit) {
+    const newScope = unit.scope && _.clone(unit.scope) || {};
+    this.scopeService.setScope(newScope);
+    this.selectUnit.emit(unit);
+  }
+
+  unselectDimension(dimension) {
+    this.scopeService.unselectDimension(dimension);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     this.updateUnit()

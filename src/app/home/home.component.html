@@ -38,15 +38,35 @@
       <div class="container-fluid">
 
         <div *ngIf="!dataReady">
-                    Loading data ...
+                    Cargando datos (espere unos segundos) ...
         </div>
         <div *ngIf="dataReady">
-
+            <!--
             <app-main-selector></app-main-selector>
-            <app-global-panel *ngIf="scopeService.scopeType()=='global'" [unit]="unit"></app-global-panel>
-            <app-tipo-institucion-panel *ngIf="scopeService.scopeType()=='tipoInstitucion'" [unit]="unit"></app-tipo-institucion-panel>
-            <app-institucion-panel *ngIf="scopeService.scopeType()=='institucion'" [unit]="unit"></app-institucion-panel>
-            <app-carrera-panel *ngIf="scopeService.scopeType()=='carrera'" [unit]="unit"></app-carrera-panel>
+            -->
+            <app-global-panel 
+                *ngIf="unit.getType()=='global'" 
+                [unit]="unit"
+                (selectUnit)="selectUnit($event)"
+            ></app-global-panel>
+            <app-tipo-institucion-panel 
+                *ngIf="unit.getType()=='tipoInstitucion'" 
+                [unit]="unit"
+                (selectUnit)="selectUnit($event)"
+                >
+            </app-tipo-institucion-panel>
+            <app-institucion-panel 
+                *ngIf="unit.getType()=='institucion'" 
+                [unit]="unit"
+                (selectUnit)="selectUnit($event)"
+                >
+            </app-institucion-panel>
+            <app-carrera-panel 
+                *ngIf="unit.getType()=='carrera'" 
+                [unit]="unit"
+                (selectUnit)="selectUnit($event)"
+                >
+            </app-carrera-panel>
         </div>
 
       </div>

@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { UnitOfAnalysis } from '../../models/unit-of-analysis';
 import { ScopeService } from '../../services/scope.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-institucion-panel',
@@ -12,6 +13,10 @@ import { ScopeService } from '../../services/scope.service';
 export class InstitucionPanelComponent implements OnInit {
   @Input()
   unit;
+
+  @Output()
+  selectUnit = new EventEmitter();
+
   matricula: any;
   records: any;
   ppIndex: any;
@@ -27,7 +32,8 @@ export class InstitucionPanelComponent implements OnInit {
   }
   
   constructor(
-    private scopeService: ScopeService
+    private scopeService: ScopeService,
+    private dataService: DataService
   ) { }
 
   ngOnInit() {
@@ -49,55 +55,34 @@ export class InstitucionPanelComponent implements OnInit {
       this.ppIndex = data
     )
 
-    this.unit.getRecords()
+    this.unit.getChildren("nomb_carrera")
     .subscribe(data => {
-      this.records = data;
+      let instituciones = data;
 
-      const groups = _.groupBy(this.records, d => d['nomb_carrera']);
-      this.carreras = _.map(groups, (items,key) => {
-        const matricula = _.reduce(items, (memo, e) => {
-          return +e.count + memo;
-        }, 0)
-        return {
-          name: key,
-          matricula: matricula
-        }
+      this.dataService.groupUnitsBySize(instituciones)
+      .subscribe(groups => {
+        this.groupBySize = groups
       })
-
-      const mean = d3.mean(this.carreras, d => d.matricula);
-      const stdev = d3.deviation(this.carreras, d => d.matricula);
-
-      const instGroups = _.groupBy(this.carreras, d => {
-        let type = "0";
-        if (d.matricula > mean + stdev) { type= "1"}
-        else if (d.matricula < mean - stdev) { type= "-1"}
-
-        return type;
-      })
-
-      this.groupBySize = _.orderBy(_.map(instGroups, (items, key) => {
-        return {
-          type: key,
-          carreras: items
-        }
-      }), d => -(+d.type))
+      ;
 
     })
-
-    this.unit.getMatricula()
-    .subscribe(data => 
-      this.matricula = data
-    )
+    
   }
 
-  selectCarrera(name) {
-    const newScope = _.clone(this.unit.scope);
-    newScope['nomb_carrera']= name;
-    this.scopeService.setScope(newScope);
-  }
 
   formatterPercent = d3.format(".1%");
   formatterNumber = d3.format(",");
+
+
+  selectItem(unit) {
+    const newScope = unit.scope && _.clone(unit.scope) || {};
+    this.scopeService.setScope(newScope);
+    this.selectUnit.emit(unit);
+  }
+
+  unselectDimension(dimension) {
+    this.scopeService.unselectDimension(dimension);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     this.updateUnit()

@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import { DataService } from '../services/data.service';
 import { EnrollmentCrossFilter } from './enrollment-cross-filter';
 import { BehaviorSubject } from 'rxjs';
+import { UnitsStorageService } from '../services/units-storage.service';
 
 export class Scope {
   department?: string;
@@ -40,15 +41,24 @@ export class UnitOfAnalysis {
   dataReadySubject = new BehaviorSubject(false);
   dataReady = this.dataReadySubject.asObservable();
   matricula: any;
+  unitsStorageService: UnitsStorageService;
 
   constructor(options: {
     scope?: {}, // scope of this unit e.g. {state:'CA', department: 'SNACKS'}
     dataService: DataService, // injection of DataService
+    unitsStorageService: UnitsStorageService,
+    records?: any[]
   }
   ) {
     this.scope = options.scope;
     this.dataService = options.dataService;
-    this.loadRecords();
+    this.unitsStorageService = options.unitsStorageService;
+    if (!options.records) {
+      this.loadRecords();
+    } else {
+      this.setRecords(options.records)
+    }
+
   }
 
   loadRecords() {
@@ -59,6 +69,12 @@ export class UnitOfAnalysis {
       this.dataReadySubject.next(true);
     })
 
+  }
+
+  setRecords(records) {
+    this.data = records;
+    this.enrollmentCF = new EnrollmentCrossFilter(<any[]>records);
+    this.dataReadySubject.next(true);
   }
 
   getMatricula() {
@@ -104,14 +120,16 @@ export class UnitOfAnalysis {
     return subject.asObservable();
   }
 
-  getHigherPercentileIndex() {
+  getHigherPercentileIndex(percentile?) {
     const subject = new BehaviorSubject(null);
+
+    const threshold = percentile || 30;
 
     this.getMatriculaByPercentil()
     .subscribe(data => {
       let total = _.reduce(data, (memo,d) => memo + d.matricula, 0);
-      let top50 = _.reduce(data.filter(d => +d.percentil <= 50), (memo,d) => memo + d.matricula, 0);
-      subject.next(top50/total);
+      let top = _.reduce(data.filter(d => +d.percentil <= threshold), (memo,d) => memo + d.matricula, 0);
+      subject.next(top/total);
     })
 
     return subject.asObservable();
@@ -124,10 +142,17 @@ export class UnitOfAnalysis {
     .subscribe(data => {
       if (data) {
 
-        let matriculaMUN  = _.find(data, d => d.dependencia == 1).matricula + _.find(data, d => d.dependencia == 2).matricula
-        let matriculaPS  = _.find(data, d => d.dependencia == 3).matricula 
-        let matriculaPP  = _.find(data, d => d.dependencia == 4).matricula 
-        let matriculaAD  = _.find(data, d => d.dependencia == 5).matricula 
+        let recordsMun  = _.find(data, d => d.dependencia == 1);
+        let recordsCorpMun  = _.find(data, d => d.dependencia == 2);
+        let recordsPS  = _.find(data, d => d.dependencia == 3);
+        let recordsPP  = _.find(data, d => d.dependencia == 4);
+        let recordsAD  = _.find(data, d => d.dependencia == 5); 
+
+
+        let matriculaMUN  = (recordsMun && recordsMun.matricula || 0) +  (recordsCorpMun && recordsCorpMun.matricula || 0)
+        let matriculaPS  = recordsPS && recordsPS.matricula || 0 
+        let matriculaPP  = recordsPP && recordsPP.matricula || 0
+        let matriculaAD  = recordsAD && recordsAD.matricula || 0 
 
         let result = [
           { dependencia: "MUN", matricula: matriculaMUN },
@@ -264,6 +289,21 @@ export class UnitOfAnalysis {
     return this.scope && this.scope['nomb_carrera'] || "";
   }
 
+  getType() {
+    let type = "global";
+
+    type = (this.getTipoInstitucion()) && "tipoInstitucion" || type
+    type = (this.getInstitucion()) && "institucion" || type
+    type = (this.getCarrera()) && "carrera" || type
+
+    return type
+  }
+
+  getName() {
+    let name = this.getCarrera() || this.getInstitucion() || this.getTipoInstitucion() || null;
+    return name
+  }
+
   getChildren(dimension) {
     const subject = new BehaviorSubject(null);
 
@@ -275,10 +315,21 @@ export class UnitOfAnalysis {
       const children = values.map(value => {
         const newScope = this.scope && _.clone(this.scope) || {};
         newScope[dimension] = value;
-        return new UnitOfAnalysis({
-          scope : newScope,
-          dataService: this.dataService
-        })
+        let unit;
+  
+        if (this.unitsStorageService.getUnit(newScope)) {
+          unit = this.unitsStorageService.getUnit(newScope);
+        } else {
+          unit = new UnitOfAnalysis({
+            "scope": newScope,
+            "dataService": this.dataService,
+            "unitsStorageService": this.unitsStorageService,
+            "records" : groups[value]
+          });
+          this.unitsStorageService.setUnit(unit);
+        }
+
+        return unit;
       })
 
       subject.next(children);
@@ -286,5 +337,6 @@ export class UnitOfAnalysis {
 
     return subject;
   }
+
 
 }

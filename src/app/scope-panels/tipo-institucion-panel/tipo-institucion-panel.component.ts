@@ -1,9 +1,12 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { UnitOfAnalysis } from '../../models/unit-of-analysis';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import {forkJoin, Observable, of, zip} from 'rxjs';
+
 import { ScopeService } from '../../services/scope.service';
+import { DataService } from '../../services/data.service';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-tipo-institucion-panel',
@@ -13,12 +16,17 @@ import { ScopeService } from '../../services/scope.service';
 export class TipoInstitucionPanelComponent implements OnInit {
   @Input()
   unit: UnitOfAnalysis;
+
+  @Output()
+  selectUnit = new EventEmitter();
+  
   matricula: any;
   records: any;
   ppIndex: any;
   top50Index: any;
   byPercentil: any;
   instituciones: UnitOfAnalysis[];
+  instituciones2: UnitOfAnalysis[];
   groupBySize: any;
 
   groupLabel = {
@@ -28,17 +36,15 @@ export class TipoInstitucionPanelComponent implements OnInit {
   }
   
   constructor(
-    private scopeService: ScopeService
+    private scopeService: ScopeService,
+    private dataServcie: DataService,
+    private utilService: UtilService
   ) { }
 
   ngOnInit() {
   }
 
   updateUnit() {
-    this.unit.getMatriculaByPercentil()
-    .subscribe(data => 
-      this.byPercentil = data
-    );
 
     this.unit.getHigherPercentileIndex()
     .subscribe(data => 
@@ -50,44 +56,6 @@ export class TipoInstitucionPanelComponent implements OnInit {
       this.ppIndex = data
     )
 
-    this.unit.getRecords()
-    .subscribe(data => {
-      this.records = data;
-
-      const groups = _.groupBy(this.records, d => d['nomb_inst']);
-      this.instituciones = _.map(groups, (items,key) => {
-        const matricula = _.reduce(items, (memo, e) => {
-          return +e.count + memo;
-        }, 0)
-        return {
-          name: key,
-          matricula: matricula
-        }
-      })
-
-      const mean = d3.mean(this.instituciones, d => d.matricula);
-      const stdev = d3.deviation(this.instituciones, d => d.matricula);
-
-      const instGroups = _.groupBy(this.instituciones, d => {
-        let type = "0";
-        if (d.matricula > mean + stdev) { type= "1"}
-        else if (d.matricula < mean - stdev) { type= "-1"}
-
-        return type;
-      })
-
-      this.groupBySize = _.orderBy(_.map(instGroups, (items, key) => {
-        return {
-          type: key,
-          instituciones: items
-        }
-      }), d => -(+d.type))
-
-      }
-
-
-    )
-
     this.unit.getMatricula()
     .subscribe(data => 
       this.matricula = data
@@ -95,17 +63,34 @@ export class TipoInstitucionPanelComponent implements OnInit {
 
     this.unit.getChildren("nomb_inst")
     .subscribe(data => {
-      //this.instituciones = data;
+      let instituciones = data;
 
-
+      this.dataServcie.groupUnitsBySize(instituciones)
+      .subscribe(groups => {
+        this.groupBySize = groups
+      })
+      ;
 
     })
   }
 
+
   selectInstitucion(name) {
+    /*
     const newScope = _.clone(this.unit.scope);
     newScope['nomb_inst']= name;
     this.scopeService.setScope(newScope);
+    */
+  }
+
+  selectItem(unit) {
+    const newScope = unit.scope && _.clone(unit.scope) || {};
+    this.scopeService.setScope(newScope);
+    this.selectUnit.emit(unit);
+  }
+
+  unselectDimension(dimension) {
+    this.scopeService.unselectDimension(dimension);
   }
 
   formatterPercent = d3.format(".1%");

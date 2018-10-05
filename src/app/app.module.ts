@@ -23,6 +23,9 @@ import { TipoInstitucionPanelComponent } from './scope-panels/tipo-institucion-p
 import { InstitucionPanelComponent } from './scope-panels/institucion-panel/institucion-panel.component';
 import { CarreraPanelComponent } from './scope-panels/carrera-panel/carrera-panel.component';
 import { MiniquadComponent } from './vis/miniquad/miniquad.component';
+import { EntityCardComponent } from './vis/entity-card/entity-card.component';
+import { UtilService } from './services/util.service';
+import { UnitsStorageService } from './services/units-storage.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,8 @@ import { MiniquadComponent } from './vis/miniquad/miniquad.component';
     TipoInstitucionPanelComponent,
     InstitucionPanelComponent,
     CarreraPanelComponent,
-    MiniquadComponent
+    MiniquadComponent,
+    EntityCardComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,9 @@ import { MiniquadComponent } from './vis/miniquad/miniquad.component';
   providers: [
     AuthService,
     DataService,
-    ScopeService
+    ScopeService,
+    UtilService,
+    UnitsStorageService
   ],
   bootstrap: [AppComponent]
 })

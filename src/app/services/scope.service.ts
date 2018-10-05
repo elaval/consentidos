@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { DIMENSION_ATTRIBUTES } from "../config";
+import * as _ from "lodash";
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ScopeService {
   private scopeSubject = new BehaviorSubject(null);
   scope = this.scopeSubject
-  _scope: any;
+  _scope: any = {};
 
   constructor() { }
 
@@ -30,5 +32,15 @@ export class ScopeService {
     }
 
     return type;
+  }
+
+  unselectDimension(dimension) {
+    if (dimension == "tipoInstitucion") {
+      this.setScope(_.omit(this._scope, DIMENSION_ATTRIBUTES["tipoInstitucion"], DIMENSION_ATTRIBUTES["institucion"], DIMENSION_ATTRIBUTES["carrera"]));
+    } else if (dimension == "institucion") {
+      this.setScope(_.omit(this._scope,  DIMENSION_ATTRIBUTES["institucion"], DIMENSION_ATTRIBUTES["carrera"]));
+    } else if (dimension == "carrera") {
+      this.setScope(_.omit(this._scope,  DIMENSION_ATTRIBUTES["carrera"]));
+    }
   }
 }
