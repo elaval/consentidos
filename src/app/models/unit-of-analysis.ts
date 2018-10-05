@@ -3,6 +3,7 @@ import { DataService } from '../services/data.service';
 import { EnrollmentCrossFilter } from './enrollment-cross-filter';
 import { BehaviorSubject } from 'rxjs';
 import { UnitsStorageService } from '../services/units-storage.service';
+import { DIMENSION_ATTRIBUTES, DIMENSION_CARRERA_GENERICA } from '../config';
 
 export class Scope {
   department?: string;
@@ -336,6 +337,21 @@ export class UnitOfAnalysis {
     })
 
     return subject;
+  }
+
+  getCarreraGenerica() {
+    let subject = new BehaviorSubject(null);
+    if (this.scope[DIMENSION_ATTRIBUTES["carrera"]]) {
+      this.getRecords()
+      .subscribe(data => {
+        let carreraGenerica = data && data[0] && data[0][DIMENSION_CARRERA_GENERICA] || null;
+        subject.next(carreraGenerica);
+      })
+    } else {
+      subject.next(null);
+    }
+
+    return subject.asObservable();
   }
 
 
