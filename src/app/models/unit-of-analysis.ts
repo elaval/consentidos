@@ -234,10 +234,11 @@ export class UnitOfAnalysis {
           }))
           
           const groupedCompetitors = _.groupBy(potentialCompetitorsRecords, d => d.nomb_inst);
-          const competitors = _.sortBy(_.map(groupedCompetitors, (d,inst) => ({
+          const competitors = _.sortBy(_.map(groupedCompetitors, (items,inst) => ({
             nomb_inst : inst,
-            matricula : d.reduce((memo,e) => +e.count + memo, 0),
-            items: d
+            matricula : items.reduce((memo,e) => +e.count + memo, 0),
+            quantileInfo: this.getQuantileDistributionForRecords(items),
+            items: items
           })), f => -f.matricula);
           
           const schoolsDict = {};
@@ -383,7 +384,14 @@ export class UnitOfAnalysis {
 
     this.getRecords().subscribe(data => {
       if (data) {
-        let sortedDecils = _.sortBy(data.map(d => +d.percentil), d => d);
+        const quantileInfo = this.getQuantileDistributionForRecords(data);
+        /*
+        let recordsByStudent = [];
+        data.forEach(d => {
+          // Add multiple stdunets according to count arribute in original records
+          _.range(+d.count).forEach(e => recordsByStudent.push(+d.percentil))
+        })
+        let sortedDecils = _.sortBy(recordsByStudent, d => +d);
         let quantileInfo = {
           quantile0: d3.quantile(sortedDecils, 0),
           quantile25: d3.quantile(sortedDecils, 0.25),
@@ -392,11 +400,34 @@ export class UnitOfAnalysis {
           quantile100: d3.quantile(sortedDecils, 1),
 
         }
+        */
         subject.next(quantileInfo);
       }
     }) 
 
     return subject.asObservable();
+  }
+
+  private getQuantileDistributionForRecords(records) {
+
+
+    let recordsByStudent = [];
+    records.forEach(d => {
+      // Add multiple stdunets according to count arribute in original records
+      _.range(+d.count).forEach(e => recordsByStudent.push(+d.percentil))
+    })
+    let sortedDecils = _.sortBy(recordsByStudent, d => +d);
+    let quantileInfo = {
+      quantile0: d3.quantile(sortedDecils, 0),
+      quantile25: d3.quantile(sortedDecils, 0.25),
+      quantile50: d3.quantile(sortedDecils, 0.5),
+      quantile75: d3.quantile(sortedDecils, 0.75),
+      quantile100: d3.quantile(sortedDecils, 1),
+
+    }
+    return (quantileInfo);
+
+
   }
 
 }

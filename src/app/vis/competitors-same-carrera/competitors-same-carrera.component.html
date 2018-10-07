@@ -5,10 +5,36 @@ Mis estudiantes:
 myQuantile25: {{myQuantile25}}
 myQuantile75: {{myQuantile75}}
 
-Mis competidores
+<hr>
+<h2>Potencial competencia </h2>
+<div class="row">
+    
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <h2>Instituciones que se pueden considerar competencia por matrícula </h2>
+    <div class="text-muted">Reciben estudiantes de los mismos establecimientos de origen y con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}</div>
+    <div class="competitor" *ngFor="let item of directCompetitors" (mouseenter) ="details(item)"  (mouseleave) ="hideDetails()">
+        <span>({{item.focusEnrollment}} estudiantes) {{item.nomb_inst}}</span>
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <h2>Establecimientos escolares asociados a la competencia</h2>
+    <div class="text-muted">Mover mouse sobre institución para desplegar</div>
+
+      <span *ngFor="let item of detailSchools" class="badge badge-primarys school" [ngClass]="'dependencia_'+item.dependencia">
+        ({{item.matricula}}) {{item.nom_rbd}} - {{item.nom_com_rbd}}
+      </span>
+  </div>
+</div>
+
+
+
+<hr>
+<!--
+Todos los competidores
 <div *ngFor="let item of competitors">
   <h3>{{item.nomb_inst}}</h3>
   Matricula: {{item.matricula}}
-  Q25: {{item.quantile25}}
-  Q75: {{item.quantile75}}
+  Q25: {{item.quantileInfo.quantile25}}
+  Q75: {{item.quantileInfo.quantile75}}
 </div>
+-->

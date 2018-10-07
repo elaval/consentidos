@@ -5,6 +5,7 @@ export const DIMENSIONS = [
 ]
 
 export const DIMENSION_ATTRIBUTES = {
+  "establecimiento": "rbd",
   "carrera": "nomb_carrera",
   "institucion": "nomb_inst",
   "tipoInstitucion": "tipo_inst_1"

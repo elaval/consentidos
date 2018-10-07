@@ -2,3 +2,25 @@
   color: orange;
   font-size: 18px;
 }
+
+.competitor {
+  cursor: pointer;
+  background-color: lightgreen; 
+}
+
+.school {
+  color: white
+}
+
+.school.dependencia_1, .school.dependencia_2 {
+  background-color: darkviolet; }
+
+.school.dependencia_3 {
+  background-color: darkmagenta; }
+
+.school.dependencia_4 {
+  background-color: darkolivegreen; }
+
+.school.dependencia_5 {
+  background-color: grey; }
+

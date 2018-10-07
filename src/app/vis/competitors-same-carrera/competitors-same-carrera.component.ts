@@ -21,6 +21,8 @@ export class CompetitorsSameCarreraComponent implements OnInit {
   myQuantile25: number;
   competitors: any;
   myQuantile75: number;
+  directCompetitors: any;
+  detailSchools: any;
   
   constructor() { }
 
@@ -50,39 +52,47 @@ export class CompetitorsSameCarreraComponent implements OnInit {
 
       this.matriculaCompetencia = _.reduce(competitorsData.competitors, (memo,d) => memo + +d.matricula, 0)
       
-      let maxPercentileBySchool = {};
-      let group = _.groupBy(myData, d => d['rbd']);
+      this.directCompetitors = competitorsData.competitors.filter(d => {
+        let overlap  =false;
+
+        overlap  = d.quantileInfo.quantile25 <= this.myQuantile75 && d.quantileInfo.quantile75 >= this.myQuantile25;
+
+        return overlap;
+      })
+
+      this.directCompetitors.forEach(d => {
+        d.focusRecords = d.items.filter(d => d.percentil <= this.myQuantile75 && d.percentil <= this.myQuantile25)
+        d.focusEnrollment =  _.reduce(d.focusRecords, (memo, d) => +d.count + memo, 0);        
+      })
+
+      this.directCompetitors = this.directCompetitors.filter(d => d.focusEnrollment);
+      this.directCompetitors = _.sortBy(this.directCompetitors, d => -d.focusEnrollment);
       
-      _.each(group, (items, school) => {
-        maxPercentileBySchool[school] = _.min(items, d => +d.percentil);
-      })
-
-      let allRecords = [];
-      let dataByCompetitor = [];
-      competitorsData.competitors.forEach(d => {
-        let matricula = _.reduce(d.items, (memo,d) => +d.count + memo,0);
-        let percentilArray = _.sortBy(d.items.map(d => +d.percentil), d => d);
-        let quantile25 = d3.quantile(percentilArray, 0.25);
-        let quantile75 = d3.quantile(percentilArray, 0.75);
-        d.quantile25 = quantile25;
-        d.quantile50 = d3.quantile(percentilArray, 0.5);;
-        d.quantile75 = quantile75;
-        allRecords = _.concat(allRecords, d.items);
-      })
-
-      let groupBySchoolCompetitors = _.groupBy(allRecords, d => d.rbd)
-
-      let out = _.map(groupBySchoolCompetitors, (items, rbd) => ({
-        rbd: rbd,
-        items : _.filter(items, d => +d.percentil <= +maxPercentileBySchool[rbd].percentil)
-      }));
-
       this.competitors = _.sortBy(competitorsData.competitors, d => +d.quantile50);
 
     })
 
   }
 
+  details(item) {
+    let groupBySchool = _.groupBy(item.items, d=> d['rbd']);
+
+    this.detailSchools = _.map(groupBySchool, (items, rbd) => ({
+      "rbd": items[0].rbd,
+      "nom_rbd": items[0].nom_rbd,
+      "nom_com_rbd": items[0].nom_com_rbd,
+      "dependencia": items[0].dependencia,
+      "matricula" : _.reduce(items, (memo,d) => +d.count + memo, 0)
+    }))
+
+    this.detailSchools = _.sortBy(this.detailSchools, d => -d.matricula)
+  }
+
+  hideDetails() {
+
+  }
+
+  /*
   distributeByPerformance(dataCompetitors) {
     let allRecords = [];
 
@@ -116,5 +126,6 @@ export class CompetitorsSameCarreraComponent implements OnInit {
 
     return groupArray
   }
+  */
 
 }
