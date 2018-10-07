@@ -12,6 +12,7 @@ export class InstitutionProfileComponent implements OnInit {
   indexGratuito: number;
   indexRendimiento: any;
   matricula: any;
+  quantileInfo: any;
   
   constructor(
     private utilService: UtilService
@@ -33,6 +34,11 @@ export class InstitutionProfileComponent implements OnInit {
       this.matricula = data
     )
 
+    this.unit.getQuantileInfo()
+    .subscribe(data => 
+      this.quantileInfo = data
+    )
+    
 
   }
 

@@ -34,7 +34,7 @@ export class AuthService {
         console.log('Access Token must exist to fetch profile');
       }
 
-      this.auth0.client.userInfo(accessToken, function(err, profile) {
+      this.auth0.client.userInfo(accessToken, (err, profile) => {
         if (profile) {
           this.userProfile = profile;
           console.log(profile);

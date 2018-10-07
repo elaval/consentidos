@@ -125,5 +125,10 @@
       }
     }
   },
-  "defaultProject": "consentidos"
+  "defaultProject": "consentidos",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

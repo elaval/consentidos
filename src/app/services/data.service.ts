@@ -77,10 +77,28 @@ export class DataService {
     this.http.get("./assets/data/ingreso2017_06.txt", {responseType: 'text'})
     .subscribe((data:any) => {
       this.data_matricula = d3.tsvParse(data);
+      this.data_matricula = this.preprocessData(this.data_matricula);
       this.setupCrossfilterMatricula(this.data_matricula);
       this.dataReadySubject.next(data && data.length > 0);
 
     })
+  }
+
+  preprocessData(data) {
+    data.forEach(d => {
+      d.rbd = d.rbd || d.RBD
+      d.nom_rbd = d.nom_rbd || d.NOM_RBD
+      d.nom_com_rbd = d.nom_com_rbd || d.NOM_COM_RBD
+      d.dependencia2 =  
+        d.dependencia == "1" ? "Municipal"
+        : d.dependencia == "2" ? "Municipal"
+        : d.dependencia == "3" ? "Part. Subvencionado"
+        : d.dependencia == "4" ? "Part. Pagado"
+        : d.dependencia == "5" ? "Adm. Delegada"
+        : "";
+    })
+
+    return data
   }
 
   loadLogos() {

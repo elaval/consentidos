@@ -1,0 +1,14 @@
+<span class="metric">{{matriculaCompetencia}}</span> estudiantes de los mismos establecimientos ingresaron a {{carrera.getCarreraGenerica() | async}} en otras instituciones
+
+Mis estudiantes:
+
+myQuantile25: {{myQuantile25}}
+myQuantile75: {{myQuantile75}}
+
+Mis competidores
+<div *ngFor="let item of competitors">
+  <h3>{{item.nomb_inst}}</h3>
+  Matricula: {{item.matricula}}
+  Q25: {{item.quantile25}}
+  Q75: {{item.quantile75}}
+</div>

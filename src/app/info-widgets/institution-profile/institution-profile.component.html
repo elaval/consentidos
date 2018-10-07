@@ -12,7 +12,10 @@ Perfil de ingreso<p></p>
     <app-miniquad [unit]="unit"></app-miniquad>
   </div>  
   <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
-    <strong>{{utilService.getDescRendimiento(this.indexRendimiento)}}</strong> es el perfil de rendimiento escolar <br> <span class="text-muted">{{utilService.formatterPercent(this.indexRendimiento)}} de estudiantes provenientes del los mejores egresados de su generación (mejores 3 deciles en ranking de egreso)</span><br>
-    <strong>{{utilService.getDescDependencia(this.indexGratuito)}}</strong> es el carácter de los establecimientos de origen de la mayoría de los estudiantes <br>   <span class="text-muted">{{utilService.formatterPercent(indexGratuito)}} de estudiantes provenientes de establecimientos gratuitos (liceos municipales o subvencionados)</span><br>  
+    <strong>{{utilService.getDescRendimiento(this.quantileInfo)}}</strong> es el perfil de los estudiantes según su posición en el ranking de egreso escolar<br> 
+    <span class="text-muted">La mediana de los estudiantes se encuentra en el decil {{this.quantileInfo.quantile50/10}} de egreso. <br>
+    Hay estudiantes entre el decil {{this.quantileInfo.quantile0/10}} y el {{this.quantileInfo.quantile100/10}}, pero se concentran entre en decil {{this.quantileInfo.quantile25/10}} y el {{this.quantileInfo.quantile75/10}} (rango intercuartil)</span><br>
+    <strong>{{utilService.getDescDependencia(this.indexGratuito)}}</strong> es el carácter de los establecimientos de los cuales egresó la mayoría de los estudiantes <br>   
+    <span class="text-muted">{{utilService.formatterPercent(indexGratuito)}} egresó establecimientos gratuitos (liceos municipales o subvencionados) y {{utilService.formatterPercent(1-indexGratuito)}} egresó establecimientos particulares pagados</span><br>  
   </div>
 </div>

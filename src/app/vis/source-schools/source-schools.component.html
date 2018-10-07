@@ -1,0 +1,12 @@
+Los estudiantes provienen de <span class="metric">{{sourceSchools.length}}</span> establecimientos escolares
+<p></p>
+Pero sólo <span class="metric">{{sourceSchools.length - singleStudenSchools}}</span> establecimientos aportan más de 1 estudiante.
+
+<div class="row" >
+    <app-school-card 
+      [school]="item"
+      *ngFor="let item of this.moreThanOneStudentSchools" 
+      class="col-xs-2 col-sm-2 col-md-2 col-lg-2 school"
+      [ngClass]="'dependencia_'+item.dependencia"
+    ></app-school-card>
+</div>

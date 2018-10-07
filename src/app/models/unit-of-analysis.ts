@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as d3 from 'd3';
 import { DataService } from '../services/data.service';
 import { EnrollmentCrossFilter } from './enrollment-cross-filter';
 import { BehaviorSubject } from 'rxjs';
@@ -194,6 +195,7 @@ export class UnitOfAnalysis {
     return subject.asObservable();
   }
 
+
   getCompetitionGraph() {
     const subject = new BehaviorSubject(null);
 
@@ -354,5 +356,47 @@ export class UnitOfAnalysis {
     return subject.asObservable();
   }
 
+  getSourceSchools() {
+    let subject = new BehaviorSubject(null);
+    this.getRecords()
+    .subscribe(data => {
+      let groupsByRbd = _.groupBy(data, d => d.rbd);
+
+      let schools = _.map(groupsByRbd, (items, rbd) => {
+        return {
+          rbd :rbd,
+          nom_rbd : items[0].nom_rbd,
+          dependencia: items[0].dependencia,
+          dependencia2: items[0].dependencia2,
+          nom_com_rbd: items[0].nom_com_rbd,
+          matricula: _.reduce(items, (memo,d) => memo + +d.count, 0),
+          items : items
+        }
+      })
+      subject.next(schools);
+    })
+    return subject.asObservable();
+  }
+
+  getQuantileInfo() {
+    const subject = new BehaviorSubject(null);
+
+    this.getRecords().subscribe(data => {
+      if (data) {
+        let sortedDecils = _.sortBy(data.map(d => +d.percentil), d => d);
+        let quantileInfo = {
+          quantile0: d3.quantile(sortedDecils, 0),
+          quantile25: d3.quantile(sortedDecils, 0.25),
+          quantile50: d3.quantile(sortedDecils, 0.5),
+          quantile75: d3.quantile(sortedDecils, 0.75),
+          quantile100: d3.quantile(sortedDecils, 1),
+
+        }
+        subject.next(quantileInfo);
+      }
+    }) 
+
+    return subject.asObservable();
+  }
 
 }

@@ -8,11 +8,15 @@ export class UtilService {
 
   constructor() { }
 
-  getDescRendimiento(index) {
-    if (index < 0.5) {
+  getDescRendimiento(quantileInfo) {
+    if (quantileInfo.quantile50 < 30) {
+      return "Muy Alto"
+    } else if (quantileInfo.quantile50 < 50) {
+      return "Alto"
+    } else if (quantileInfo.quantile50 > 50) {
       return "Bajo"
     } else {
-      return "Alto"
+      return "Medio"
     }
   }
 

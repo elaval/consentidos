@@ -2,27 +2,13 @@
 
 <h3>Perfil de estudiantes matriculados en 2017</h3>
 
-
-
 <app-institution-profile [unit]="unit"></app-institution-profile>
 <hr>
-
-
+<app-source-schools [unit]="unit"></app-source-schools>
+<hr>
+<app-competitors-same-carrera [carrera]="unit"></app-competitors-same-carrera>
+<hr>
 <app-schools-institutions [unit]="unit"></app-schools-institutions>
 <app-competitor  [institucion]="selectedInstitucion" [carrera]="selectedCarrera"></app-competitor>
 <p></p>
 
-
-  <table class="table">
-      <tr *ngFor="let item of byPercentil">
-        <td>{{item.percentil}}</td>
-        <td>{{item.matricula}}</td>
-      </tr>
-  </table>
-
-  <table class="table">
-      <tr *ngFor="let item of byDependencia">
-        <td>{{item.dependencia}}</td>
-        <td>{{item.matricula}}</td>
-      </tr>
-  </table>

@@ -1,0 +1,46 @@
+:host {
+  border-radius: 3px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+:host.school.dependencia_1, :host.school.dependencia_2 {
+  background-color: darkviolet;
+}
+
+:host.school.dependencia_3 {
+  background-color: darkmagenta;
+}
+
+:host.school.dependencia_4 {
+  background-color: darkolivegreen;
+}
+:host.school.dependencia_5 {
+  background-color: grey;
+}
+
+
+.size{
+  font-size: 24px;
+  color: orange;
+}
+
+.name{
+  font-size: 12px;
+  color:white
+}
+
+.comuna{
+  font-size: 10px;
+  color: lightcyan
+}
+
+.dependencia {
+  font-size: 10px;
+  color:lightcyan
+}
+
+app-miniquad {
+  border-radius: 2px;
+  background-color: white;
+}

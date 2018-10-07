@@ -26,6 +26,9 @@ import { MiniquadComponent } from './vis/miniquad/miniquad.component';
 import { EntityCardComponent } from './vis/entity-card/entity-card.component';
 import { UtilService } from './services/util.service';
 import { UnitsStorageService } from './services/units-storage.service';
+import { SourceSchoolsComponent } from './vis/source-schools/source-schools.component';
+import { SchoolCardComponent } from './vis/school-card/school-card.component';
+import { CompetitorsSameCarreraComponent } from './vis/competitors-same-carrera/competitors-same-carrera.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,10 @@ import { UnitsStorageService } from './services/units-storage.service';
     InstitucionPanelComponent,
     CarreraPanelComponent,
     MiniquadComponent,
-    EntityCardComponent
+    EntityCardComponent,
+    SourceSchoolsComponent,
+    SchoolCardComponent,
+    CompetitorsSameCarreraComponent
   ],
   imports: [
     BrowserModule,
