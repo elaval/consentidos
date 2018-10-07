@@ -207,11 +207,11 @@ export class MiniquadComponent implements OnInit {
         this.quantileBand
         .transition()
         .attr("width", () => {
-          let h =  this.bandScale(`${quantileInfo.quantile25}`)-this.bandScale(`${quantileInfo.quantile75}`) + this.bandScale.bandwidth();
+          let h =  this.bandScale(`${this.roundDecil(quantileInfo.quantile25)}`)-this.bandScale(`${this.roundDecil(quantileInfo.quantile75)}`) + this.bandScale.bandwidth();
           return h;
         })
         .attr("x", () => {
-          let v = this.bandScale(`${quantileInfo.quantile75}`)
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile75)}`)
           return v;
         })
         .attr("height", () => {
@@ -225,11 +225,11 @@ export class MiniquadComponent implements OnInit {
         this.quantileMedian
         .transition()
         .attr("x1", () => {
-          let v = this.bandScale(`${quantileInfo.quantile50}`)+ this.bandScale.bandwidth()/2
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile50)}`)+ this.bandScale.bandwidth()/2
           return v;
         })        
         .attr("x2", () => {
-          let v = this.bandScale(`${quantileInfo.quantile50}`)+ this.bandScale.bandwidth()/2
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile50)}`)+ this.bandScale.bandwidth()/2
           return v;
         })
         .attr("y1", () => {
@@ -244,11 +244,11 @@ export class MiniquadComponent implements OnInit {
         this.topQuartile
         .transition()
         .attr("x1", () => {
-          let v = this.bandScale(`${quantileInfo.quantile100}`)
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile100)}`)
           return v;
         })        
         .attr("x2", () => {
-          let v = this.bandScale(`${quantileInfo.quantile75}`)
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile75)}`)
           return v;
         })
         .attr("y1", () => {
@@ -267,11 +267,11 @@ export class MiniquadComponent implements OnInit {
         this.bottomQuartile
         .transition()
         .attr("x1", () => {
-          let v = this.bandScale(`${quantileInfo.quantile25}`)+ this.bandScale.bandwidth()
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile25)}`)+ this.bandScale.bandwidth()
           return v;
         })        
         .attr("x2", () => {
-          let v = this.bandScale(`${quantileInfo.quantile0}`) + this.bandScale.bandwidth();
+          let v = this.bandScale(`${this.roundDecil(quantileInfo.quantile0)}`) + this.bandScale.bandwidth();
           return v;
         })
         .attr("y1", () => {
@@ -308,6 +308,10 @@ export class MiniquadComponent implements OnInit {
 
 
     }
+  }
+
+  roundDecil(num) {
+    return Math.round(num/10)*10;
   }
 
   formatterPercent = d3.format(".1%");

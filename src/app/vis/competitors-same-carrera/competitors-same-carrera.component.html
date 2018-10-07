@@ -1,14 +1,14 @@
 <span class="metric">{{matriculaCompetencia}}</span> estudiantes de los mismos establecimientos ingresaron a {{carrera.getCarreraGenerica() | async}} en otras instituciones
 <hr>
 <h2>Potencial competencia </h2>
+<div class="text-muted" *ngIf="!(directCompetitors && directCompetitors.length)">No se han encontrado instituciones que cumplan el perfil de competencia:</div>
 <div class="text-muted">Carreras similares en otras instituciones que reciben alumnos de similar perfil de ranking escolar, provenientes de los mismos establecimientos escolares que {{carrera.getInstitucion()}}</div>
 
-<div class="row">
-    
+<div class="row" *ngIf="directCompetitors && directCompetitors.length">
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
     <h3>Instituciones en competencia </h3>
-    <div class="text-muted">Estudiantes con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}. Mover seleccionar institución para ver detalle</div>
-    
+    <div class="text-muted">Estudiantes con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}. Seleccionar institución para ver detalle</div>
+
     <div class="row">
       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" *ngFor="let item of directCompetitors" (mouseenter)="details(item)"  (mouseleave) ="hideDetails()">
         <div class="competitor" [ngClass]="{selected: item==selectedItem}">
