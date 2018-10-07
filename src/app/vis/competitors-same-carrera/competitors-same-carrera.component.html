@@ -1,24 +1,35 @@
 <span class="metric">{{matriculaCompetencia}}</span> estudiantes de los mismos establecimientos ingresaron a {{carrera.getCarreraGenerica() | async}} en otras instituciones
-
-Mis estudiantes:
-
-myQuantile25: {{myQuantile25}}
-myQuantile75: {{myQuantile75}}
-
 <hr>
 <h2>Potencial competencia </h2>
+<div class="text-muted">Carreras similares en otras instituciones que reciben alumnos de similar perfil de ranking escolar, provenientes de los mismos establecimientos escolares que {{carrera.getInstitucion()}}</div>
+
 <div class="row">
     
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-    <h2>Instituciones que se pueden considerar competencia por matrícula </h2>
-    <div class="text-muted">Reciben estudiantes de los mismos establecimientos de origen y con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}</div>
-    <div class="competitor" *ngFor="let item of directCompetitors" (mouseenter) ="details(item)"  (mouseleave) ="hideDetails()">
-        <span>({{item.focusEnrollment}} estudiantes) {{item.nomb_inst}}</span>
+    <h3>Instituciones en competencia </h3>
+    <div class="text-muted">Estudiantes con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}. Mover seleccionar institución para ver detalle</div>
+    
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" *ngFor="let item of directCompetitors" (mouseenter)="details(item)"  (mouseleave) ="hideDetails()">
+        <div class="competitor" [ngClass]="{selected: item==selectedItem}">
+          <div class="row">
+              <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <img *ngIf="logosUrls[item.nomb_inst]" height="50" [src]="logosUrls[item.nomb_inst]">
+              </div>          
+              <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <span class="competitor name">{{item.nomb_inst}}</span><br>
+                <span class="metric">{{item.focusEnrollment}} estudiantes</span>
+              </div>
+            </div>
+        </div>
+
+
+      </div>
     </div>
   </div>
   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-    <h2>Establecimientos escolares asociados a la competencia</h2>
-    <div class="text-muted">Mover mouse sobre institución para desplegar</div>
+    <h3>Establecimientos escolares con estudiantes en {{selectedItem.nomb_inst}}</h3>
+    <div class="text-muted">Estudiantes con similar ranking, matriculados en {{carrera.getCarreraGenerica() | async}}</div>
 
       <span *ngFor="let item of detailSchools" class="badge badge-primarys school" [ngClass]="'dependencia_'+item.dependencia">
         ({{item.matricula}}) {{item.nom_rbd}} - {{item.nom_com_rbd}}

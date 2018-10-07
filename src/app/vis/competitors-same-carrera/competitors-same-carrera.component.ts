@@ -4,6 +4,7 @@ import * as _ from "lodash"
 import * as d3 from "d3"
 import { BehaviorSubject, zip } from 'rxjs';
 import { DIMENSION_ATTRIBUTES } from '../../config';
+import { DataService } from '../../services/data.service';
 
 const LIMIT_HIGH = 30;
 const LIMIT_LOW = 70;
@@ -23,22 +24,20 @@ export class CompetitorsSameCarreraComponent implements OnInit {
   myQuantile75: number;
   directCompetitors: any;
   detailSchools: any;
+  selectedItem: any;
+  logosUrls: any;
   
-  constructor() { }
+  constructor(
+    private dataService: DataService
+  ) { }
 
   ngOnInit() {
     this.carrera.getCompetitionGraph()
     .subscribe(data => {
       this.competitionData = data
-
-
     })
 
-    this.carrera.getRecords()
-    .subscribe(data => {
-
-
-    })
+    this.dataService.logos.subscribe(data => this.logosUrls =data)
 
     zip(this.carrera.getCompetitionGraph(), this.carrera.getRecords())
     .subscribe(res => {
@@ -75,7 +74,7 @@ export class CompetitorsSameCarreraComponent implements OnInit {
   }
 
   details(item) {
-    let groupBySchool = _.groupBy(item.items, d=> d['rbd']);
+    let groupBySchool = _.groupBy(item.focusRecords, d=> d['rbd']);
 
     this.detailSchools = _.map(groupBySchool, (items, rbd) => ({
       "rbd": items[0].rbd,
@@ -85,6 +84,7 @@ export class CompetitorsSameCarreraComponent implements OnInit {
       "matricula" : _.reduce(items, (memo,d) => +d.count + memo, 0)
     }))
 
+    this.selectedItem = item;
     this.detailSchools = _.sortBy(this.detailSchools, d => -d.matricula)
   }
 

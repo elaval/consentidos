@@ -5,11 +5,20 @@
 
 .competitor {
   cursor: pointer;
-  background-color: lightgreen; 
+  color:white;
+  background-color: darkslateblue; 
+  border-radius: 5px;
+  margin: 2px;
+}
+
+.competitor.selected {
+  border-style: solid;
+  border-color: orange;
 }
 
 .school {
-  color: white
+  color: white;
+  margin: 2px;
 }
 
 .school.dependencia_1, .school.dependencia_2 {

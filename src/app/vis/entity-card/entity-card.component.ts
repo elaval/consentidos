@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UnitOfAnalysis } from '../../models/unit-of-analysis';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-entity-card',
@@ -12,24 +13,27 @@ export class EntityCardComponent implements OnInit {
   publicLabel: string;
   rendimientoLabel: string;
   
-  constructor() { }
+  constructor(
+    private utilService : UtilService
+  ) { }
 
   ngOnInit() {
+    this.unit.getQuantileInfo()
+    .subscribe(data => {
+      const quantileInfo = data;
+      this.rendimientoLabel = `${this.utilService.getDescRendimiento(quantileInfo).toUpperCase()} ranking de egreso`;
+    })
     this.unit.getPrivateIndex()
     .subscribe(d => {
-      this.publicLabel = "Gratuito (Municipal/Subvencionado)";
-      if (d > .5) {
-        this.publicLabel = "Pagado (Particular pagado)";
+      const freeSchoolIndex = 1 - d;
+      if (freeSchoolIndex >= .5) {
+        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()} (Mun./Subv.)`; 
+      } else {
+        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()} (Part. Pagado)`; 
+
       }
     })
 
-    this.unit.getHigherPercentileIndex()
-    .subscribe(d => {
-      this.rendimientoLabel = "Alto rendimiento";
-      if (d < .5) {
-        this.rendimientoLabel = "Bajo rendimiento";
-      }
-    })
   }
 
 }
