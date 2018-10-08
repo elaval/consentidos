@@ -10,11 +10,11 @@
     <div class="text-muted">Estudiantes con ranking entre decil {{myQuantile25/10}} y {{myQuantile75/10}}. Seleccionar institución para ver detalle</div>
 
     <div class="row">
-      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" *ngFor="let item of directCompetitors" (mouseenter)="details(item)"  (mouseleave) ="hideDetails()">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 competitorContainer" *ngFor="let item of directCompetitors" (mouseenter)="details(item)"  (mouseleave) ="hideDetails()">
         <div class="competitor" [ngClass]="{selected: item==selectedItem}">
           <div class="row">
               <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                <img *ngIf="logosUrls[item.nomb_inst]" height="50" [src]="logosUrls[item.nomb_inst]">
+                <img *ngIf="logosUrls[item.nomb_inst]" class="img-fluid" [src]="logosUrls[item.nomb_inst]">
               </div>          
               <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <span class="competitor name">{{item.nomb_inst}}</span><br>

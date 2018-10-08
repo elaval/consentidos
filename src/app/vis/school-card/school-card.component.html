@@ -1,12 +1,13 @@
 <div 
-  [ngClass]="'dep'+school.dependencia"
+  class="cardContainer"
+  [ngClass]="'dependencia_'+school.dependencia"
 >     
   <div class="row">
       <div class="col-12 name">{{school.nom_rbd}}</div>
   </div>
   <div class="row">
-    <div class="col-2 size">{{school.matricula}}</div>
-    <div class="col-5  text-center comuna">
+    <div class="col-3 size text-center">{{school.matricula}}</div>
+    <div class="col-4  text-center comuna">
         {{school.nom_com_rbd}}
     </div>    
     <div class="col-5  text-center dependencia">

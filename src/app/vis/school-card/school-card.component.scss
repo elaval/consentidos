@@ -1,21 +1,28 @@
 :host {
-  border-radius: 3px;
-  margin: 2px;
+  padding: 5px;
   cursor: pointer;
 }
 
-:host.school.dependencia_1, :host.school.dependencia_2 {
+.cardContainer {
+  border-radius: 3px;
+  padding: 2px;
+  height:100%;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+
+.cardContainer.dependencia_1, .cardContainer.dependencia_2 {
   background-color: darkviolet;
 }
 
-:host.school.dependencia_3 {
+.cardContainer.dependencia_3 {
   background-color: darkmagenta;
 }
 
-:host.school.dependencia_4 {
+.cardContainer.dependencia_4 {
   background-color: darkolivegreen;
 }
-:host.school.dependencia_5 {
+.cardContainer.dependencia_5 {
   background-color: grey;
 }
 
