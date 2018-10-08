@@ -5,6 +5,7 @@ import { UnitOfAnalysis } from '../models/unit-of-analysis';
 import * as d3 from "d3";
 import { ScopeService } from '../services/scope.service';
 import { UnitsStorageService } from '../services/units-storage.service';
+import { UtilService } from '../services/util.service';
 
 @Component({
   selector: 'app-home',
@@ -27,11 +28,13 @@ export class HomeComponent implements OnInit {
   dataReady: any;
   matricula: any;
   competitionGraphData: any;
+  progress: any;
 
   constructor(
     public auth: AuthService,
     private dataService: DataService,
     private scopeService: ScopeService,
+    private utilService: UtilService,
     private unitsStorageService: UnitsStorageService
     ) { 
       dataService.instituciones.subscribe(data => {
@@ -42,6 +45,10 @@ export class HomeComponent implements OnInit {
       })      
       dataService.carrera.subscribe(data => {
         this.carreras  = data;
+      })
+
+      this.dataService.dataProgress.subscribe(data => {
+        this.progress = utilService.formatterPercent(data);
       })
 
     }

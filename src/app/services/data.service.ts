@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, zip } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpEvent, HttpEventType } from '@angular/common/http';
 import * as d3 from "d3";
 import * as _ from "lodash";
 import * as crossfilter from "crossfilter";
@@ -34,6 +34,10 @@ export class DataService {
   private logosSubject = new BehaviorSubject(null);
   logos = this.logosSubject.asObservable();
 
+  private dataProgressSubject = new BehaviorSubject(null);
+  dataProgress = this.dataProgressSubject.asObservable();
+
+
   data_carerras: any[];
   cfCarreras: CrossFilter.CrossFilter<{}>;
   cfCarrerasDimensions = {};
@@ -66,6 +70,8 @@ export class DataService {
     this.loadLogos();
   }
 
+
+
   loadCarreras() {
     this.http.get("https://edudata.s3.amazonaws.com/chile/matricula/carreras2017.txt", {responseType: 'text'})
     .subscribe((data:any) => {
@@ -76,6 +82,8 @@ export class DataService {
   }
 
   loadMatricula() {
+    /*
+    We change the standard http.get() call for a HttpRequest in order to monitor progress
     this.http.get("./assets/data/ingreso2017_06.txt", {responseType: 'text'})
     .subscribe((data:any) => {
       this.data_matricula = d3.tsvParse(data);
@@ -84,6 +92,36 @@ export class DataService {
       this.dataReadySubject.next(data && data.length > 0);
 
     })
+    */
+
+    const req = new HttpRequest('GET', "./assets/data/ingreso2017_06.txt", {
+      reportProgress: true,
+      responseType: 'text'
+    });
+
+    this.http.request(req).subscribe((event: HttpEvent<any>) => {
+      switch (event.type) {
+        case HttpEventType.Sent:
+          console.log('Request sent!');
+          break;
+        case HttpEventType.ResponseHeader:
+          console.log('Response header received!');
+          break;
+        case HttpEventType.DownloadProgress:
+          const kbLoaded = Math.round(event.loaded / 1024);
+          const kbTotal = Math.round(event.total / 1024);
+          this.dataProgressSubject.next(kbLoaded/kbTotal);
+          // console.log(`Download in progress! ${ kbLoaded/kbTotal } loaded`);
+          break;
+        case HttpEventType.Response:
+          const data = event.body;
+          this.data_matricula = d3.tsvParse(data);
+          this.data_matricula = this.preprocessData(this.data_matricula);
+          this.setupCrossfilterMatricula(this.data_matricula);
+          this.dataReadySubject.next(data && data.length > 0);
+          // console.log('😺 Done!', event.body);
+      }
+    });
   }
 
   preprocessData(data) {
