@@ -26,9 +26,9 @@ export class InstitucionPanelComponent implements OnInit {
   groupBySize: any;
 
   groupLabel = {
-    "1": "Matricula alta",
-    "0": "Matricula media",
-    "-1": "Matricula baja"
+    "1": "Matrícula alta",
+    "0": "Matrícula media",
+    "-1": "Matrícula baja"
   }
   
   constructor(
