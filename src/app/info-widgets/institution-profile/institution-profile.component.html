@@ -8,10 +8,10 @@ Perfil de ingreso<p></p>
 <hr>
 
 <div class="row">
-  <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-center">
+  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 text-center">
     <app-miniquad [unit]="unit"></app-miniquad>
   </div>  
-  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+  <div class="col-xs-12 col-sm-12 col-md-9 col-lg-10">
     <strong>{{utilService.getDescRendimiento(this.quantileInfo)}}</strong> es el perfil de los estudiantes según su posición en el ranking de egreso escolar<br> 
     <span class="text-muted">La mediana de los estudiantes se encuentra en el decil {{this.quantileInfo.quantile50/10}} de egreso. <br>
     Hay estudiantes entre el decil {{this.quantileInfo.quantile0/10}} y el {{this.quantileInfo.quantile100/10}}, pero se concentran entre en decil {{this.quantileInfo.quantile25/10}} y el {{this.quantileInfo.quantile75/10}} (rango intercuartil)</span><br>

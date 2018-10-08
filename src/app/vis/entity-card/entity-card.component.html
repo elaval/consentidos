@@ -1,4 +1,4 @@
-<div 
+<div class="cardContainer"
   [ngClass]="unit.getType()"
 >     
   <div class="row">
@@ -6,10 +6,10 @@
   </div>
   <div class="row">
     <div class="col-4 size">{{unit.getMatricula() | async}}</div>
-    <div class="col-2 size text-center">
+    <div class="col-4 size text-center">
         <app-miniquad [unit]="unit" [size]="20" [hideLabels]="true"></app-miniquad>
       </div>    
-      <div class="col-6 labels">
+      <div class="col-4 labels">
           {{rendimientoLabel}}<br>
           {{publicLabel}}
         </div>

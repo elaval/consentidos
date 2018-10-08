@@ -21,15 +21,15 @@ export class EntityCardComponent implements OnInit {
     this.unit.getQuantileInfo()
     .subscribe(data => {
       const quantileInfo = data;
-      this.rendimientoLabel = `${this.utilService.getDescRendimiento(quantileInfo).toUpperCase()} ranking de egreso`;
+      this.rendimientoLabel = `${this.utilService.getDescRendimiento(quantileInfo).toUpperCase()} ranking`;
     })
     this.unit.getPrivateIndex()
     .subscribe(d => {
       const freeSchoolIndex = 1 - d;
       if (freeSchoolIndex >= .5) {
-        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()} (Mun./Subv.)`; 
+        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()}`; 
       } else {
-        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()} (Part. Pagado)`; 
+        this.publicLabel = `${this.utilService.getDescDependencia(freeSchoolIndex).toUpperCase()}`; 
 
       }
     })

@@ -12,7 +12,7 @@
       [unit]="unit" 
       *ngFor="let unit of group.instituciones" 
       (click)="selectItem(unit)" 
-      class="col-xs-2 col-sm-2 col-md-2 col-lg-2"
+      class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
       [ngClass]="unit.getType()"
       >     
     </app-entity-card>
