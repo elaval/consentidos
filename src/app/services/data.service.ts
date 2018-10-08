@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import * as crossfilter from "crossfilter";
 import { UnitOfAnalysis } from '../models/unit-of-analysis';
 import { DIMENSION_ATTRIBUTES } from '../config';
+import { UnitsStorageService } from './units-storage.service';
 
 const logosURL = "https://raw.githubusercontent.com/elaval/datasets/master/logos.txt?v=6"
 @Injectable({
@@ -57,7 +58,8 @@ export class DataService {
   data_logos: d3.DSVParsedArray<d3.DSVRowString>;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private unitsStorageService: UnitsStorageService
   ) { 
     this.loadCarreras();
     this.loadMatricula();
@@ -213,6 +215,45 @@ export class DataService {
 
   }
 
+  findSiblings(carrera: UnitOfAnalysis) {
+    const subject = new BehaviorSubject(null);
+
+    carrera.getRecords()
+    .subscribe(data => {
+      const carreraGenerica = data[0].area_carrera_generica;
+
+      const dataOthers = this.data_matricula.filter(d => d.area_carrera_generica == carreraGenerica && d.tipo_inst_1 == carrera.getTipoInstitucion());
+                
+      const groupByInstitucion = _.groupBy(dataOthers, d=> d[DIMENSION_ATTRIBUTES['institucion']])
+
+      const output = _.map(groupByInstitucion, (records, institucion) => {
+        const newScope = _.clone(carrera.scope);
+
+        newScope[DIMENSION_ATTRIBUTES['institucion']]  = institucion;
+        
+        let unit;
+  
+        if (this.unitsStorageService.getUnit(newScope)) {
+          unit = this.unitsStorageService.getUnit(newScope);
+        } else {
+          unit = new UnitOfAnalysis({
+            "scope": newScope,
+            "dataService": this,
+            "unitsStorageService": this.unitsStorageService,
+            "records" : records
+          });
+          this.unitsStorageService.setUnit(unit);
+        }
+        return unit;
+      })
+
+      subject.next(output);
+
+    })
+
+    return subject.asObservable();
+  }
+
   findEquivalents(institucion, carrera) {
     return new Promise((resolve, reject) => {
       this.cfMatriculaReady.subscribe(ready => {
@@ -225,11 +266,9 @@ export class DataService {
           const groupByInstitucion = _.groupBy(dataOthers, d=> d.nomb_inst)
           
           const output = _.map(groupByInstitucion, (items, key) => ({
-            
               institucion: key,
               metrics : this.getMetrics(items),
-              records : items
-            
+              records : items            
           }))
       
   

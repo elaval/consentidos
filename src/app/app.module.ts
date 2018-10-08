@@ -29,6 +29,7 @@ import { UnitsStorageService } from './services/units-storage.service';
 import { SourceSchoolsComponent } from './vis/source-schools/source-schools.component';
 import { SchoolCardComponent } from './vis/school-card/school-card.component';
 import { CompetitorsSameCarreraComponent } from './vis/competitors-same-carrera/competitors-same-carrera.component';
+import { PerfilCarerasComponent } from './vis/perfil-careras/perfil-careras.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { CompetitorsSameCarreraComponent } from './vis/competitors-same-carrera/
     EntityCardComponent,
     SourceSchoolsComponent,
     SchoolCardComponent,
-    CompetitorsSameCarreraComponent
+    CompetitorsSameCarreraComponent,
+    PerfilCarerasComponent
   ],
   imports: [
     BrowserModule,

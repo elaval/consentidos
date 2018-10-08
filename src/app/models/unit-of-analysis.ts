@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 import { DataService } from '../services/data.service';
 import { EnrollmentCrossFilter } from './enrollment-cross-filter';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, zip } from 'rxjs';
 import { UnitsStorageService } from '../services/units-storage.service';
 import { DIMENSION_ATTRIBUTES, DIMENSION_CARRERA_GENERICA } from '../config';
 
@@ -23,9 +23,6 @@ export class Scope {
   store_id?: string;
   subdivision?: string;
 }
-
-
-
 
 /**
  * Class that represent a unit associated to a specific scope (set of dimensions) with metrics associated to a
@@ -428,6 +425,20 @@ export class UnitOfAnalysis {
     return (quantileInfo);
 
 
+  }
+
+  getProfileInfo() {
+    const subject = new BehaviorSubject(null);
+
+    zip(this.getQuantileInfo(), this.getPrivateIndex())
+    .subscribe(res => 
+      subject.next({
+        "quantileInfo": res[0],
+        "privateIndex": res[1]
+      })
+    )
+
+    return subject.asObservable();
   }
 
 }

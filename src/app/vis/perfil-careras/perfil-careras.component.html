@@ -1,0 +1,30 @@
+
+<h2 *ngIf="loading">Procesando perfil de todas las carreras de {{carreraGenerica}} ...</h2>
+
+<h2 *ngIf="siblingsData">Perfil de todas las carreras de {{carreraGenerica}} en {{carrera.getTipoInstitucion()}}</h2>
+<div class="row" *ngFor="let item of siblingsData">
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h3>{{item.categoriaRanking}} ranking de egreso</h3>
+    <table class="table table-striped table-hover 
+
+    ">
+      <thead>
+        <tr>
+            <th>Institución</th>
+            <th># Estudiantes</th>
+            <th>% provenientes de Part. Pagado</th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item2 of item.items">
+            <td>{{item2.unit.getInstitucion()}}</td>
+            <td>{{item2.unit.getMatricula() | async}}</td>
+            <td>{{utilService.formatterPercent(item2.info.privateIndex)}}</td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
