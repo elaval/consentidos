@@ -51,7 +51,7 @@ export class MiniquadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.height = this.size * 0.75 || this.height;
+    this.height = this.size * 0.85 || this.height;
     this.width = this.size || this.width;
 
 
@@ -118,6 +118,20 @@ export class MiniquadComponent implements OnInit {
     
     this.container.append("text")
     .classed("yTitle", true)
+    .classed("top", true)
+    .attr("font-size", 8)
+    .attr("text-anchor", "middle")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("dy", 10)
+    .attr("transform", `rotate(90 ${0} ${0} )`)
+    .attr("opacity", this.hideLabels ? 0 : 1)
+    .text("% alto ranking")
+    ;
+
+    this.container.append("text")
+    .classed("yTitle", true)
+    .classed("bottom", true)
     .attr("font-size", 8)
     .attr("text-anchor", "middle")
     .attr("x", 0)
@@ -195,6 +209,8 @@ export class MiniquadComponent implements OnInit {
 
 
         let yLabel = freeSchoolIndex < 0.5 ? "PAGADO" : "GRATUITO";
+        let yLabelTop =  "GRATUITO";
+        let yLabelBottom =  "PAGADO";
         let yLabelPos = "middle"; // yValue > 0.7 ? "start" : yValue > 0.3 ? "middle" : "end";
         let xLabel = this.utilService.getDescRendimiento(quantileInfo).toUpperCase();
         //quantileInfo.quantile50 < 30 ? "MUY ALTO" : quantileInfo.quantile50 < 50 ? "ALTO" : quantileInfo.quantile50 > 70 ? "MUY BAJO" : quantileInfo.quantile50 > 50 ? "BAJO" : "MEDIO";
@@ -295,6 +311,24 @@ export class MiniquadComponent implements OnInit {
         .text(`${xLabel}`)
         ;
 
+        this.container.select("text.yTitle.top")
+        .attr("x", quantileInfo.quantile50 > 50 ? 0 : this.width)
+        .attr("dy", quantileInfo.quantile50 > 50 ? 5 : 0)
+        .attr("y", this.yScale(0.75))
+        .attr("text-anchor",d => yLabelPos)
+        .attr("transform", `rotate(90 ${quantileInfo.quantile50 > 50 ? 0 : this.width} ${this.yScale(0.75)} )`)
+        .text(`${yLabelTop}`)
+        ;
+
+        this.container.select("text.yTitle.bottom")
+        .attr("x", quantileInfo.quantile50 > 50 ? 0 : this.width)
+        .attr("dy", quantileInfo.quantile50 > 50 ? 5 : 0)
+        .attr("y", this.yScale(0.25))
+        .attr("text-anchor",d => yLabelPos)
+        .attr("transform", `rotate(90 ${quantileInfo.quantile50 > 50 ? 0 : this.width} ${this.yScale(0.25)} )`)
+        .text(`${yLabelBottom}`)
+        ;
+        /*
         this.container.select("text.yTitle")
         .attr("x", quantileInfo.quantile50 > 50 ? 0 : this.width)
         .attr("dy", quantileInfo.quantile50 > 50 ? 5 : 0)
@@ -304,6 +338,7 @@ export class MiniquadComponent implements OnInit {
 
         .text(`${yLabel}`)
         ;
+        */
       })
 
 
